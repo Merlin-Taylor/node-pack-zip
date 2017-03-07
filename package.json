@@ -1,6 +1,7 @@
 {
   "author": {
-    "name": "Trainline"
+    "name": "Merlin Taylor",
+    "email": "code.merlin.taylor@gmail.com"
   },
   "bin": {
     "pack-zip": "bin/pack-zip.js"
@@ -35,7 +36,10 @@
   "name": "pack-zip",
   "optionalDependencies": {},
   "readme": "ERROR: No README data found!",
-  "repository": "https://github.com/Merlin-Taylor/node-pack-zip.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Merlin-Taylor/node-pack-zip.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
