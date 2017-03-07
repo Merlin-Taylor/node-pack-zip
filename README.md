@@ -1,0 +1,1 @@
+Run `npm pack` and convert the output from a .tar.gz file to a .zip file

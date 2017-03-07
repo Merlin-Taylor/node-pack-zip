@@ -1,0 +1,42 @@
+{
+  "author": {
+    "name": "Trainline"
+  },
+  "bin": {
+    "pack-zip": "bin/pack-zip.js"
+  },
+  "dependencies": {
+    "tar-to-zip": "^1.3.0"
+  },
+  "description": "Run npm pack and convert the output from a .tar.gz file to a .zip file",
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": 6
+    }
+  },
+  "keywords": [
+    "pack",
+    "lambda",
+    "zip"
+  ],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "merlin-taylor",
+      "email": "code.merlin.taylor@gmail.com"
+    }
+  ],
+  "name": "pack-zip",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.0.1"
+}
