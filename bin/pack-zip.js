@@ -2,35 +2,21 @@
 
 'use strict';
 
-const childProcess = require('child_process');
 const console = require('console');
-const fs = require('fs');
-const process = require('process');
-const { convertToZip } = require('../index');
+const { pack } = require('../index');
 
-const NPM_PACK = 'npm pack --production';
+var args = process.argv.slice(2);
 
-childProcess.exec(NPM_PACK, {
-    cwd: process.cwd(),
-    env: process.env,
-    timeout: 10000
-}, (error, stdout, stderr) => {
-    console.warn(stderr);
-    if (error) {
-        console.error(error);
-    } else {
-        let packFileName = stdout.trim();
-        convertToZip(packFileName, (error, data) => {
-            if (error) {
-                console.error(error);
-            } else {
-                console.log(data);
-                fs.unlink(packFileName, error => {
-                    if (error) {
-                        console.error(error);
-                    }
-                });
-            }
+if (args.length <= 2) {
+    let source = args.length >= 1 ? { source: args[0] } : {};
+    let destination = args.length >= 2 ? { destination: args[1] } : {};
+    pack(Object.assign(source, destination))
+        .then(() => process.exit(0))
+        .catch(error => {
+            console.error(error);
+            process.exit(1);
         });
-    }
-});
+} else {
+    console.log('USAGE: pack-zip [source] [destination]');
+    process.exit(1);
+}
