@@ -1,6 +1,7 @@
 'use strict';
 
 const archiver = require('archiver');
+const console = require('console');
 const fs = require('fs');
 const globby = require('globby');
 const path = require('path');
@@ -25,7 +26,11 @@ let getFiles = ({ cwd }) => ({ include, ignore }) => globby(include, { cwd: cwd 
 
 function getPackageInfo(packageFile) {
     return readFile(packageFile, 'utf-8')
-        .then(content => JSON.parse(content));
+        .then(content => JSON.parse(content))
+        .catch(error => {
+            console.error(`Failed to read ${packageFile}`);
+            return Promise.reject(error);
+        });
 }
 
 function getDefaultOuputFilename({ cwd }) {
@@ -38,7 +43,7 @@ function getGlobPatterns({ cwd }) {
     let at = resolvePathRelativeTo(cwd);
 
     let includePatterns = getPackageInfo(at('package.json'))
-        .then(rootPackage => Object.keys(rootPackage.dependencies).filter(x => x !== 'aws-sdk').map(x => `node_modules/${x}/**`))
+        .then(rootPackage => Object.keys(rootPackage.dependencies || {}).filter(x => x !== 'aws-sdk').map(x => `node_modules/${x}/**`))
         .then(includePatterns => DEFAULT_INCLUDE_PATTERNS.concat(includePatterns))
 
     let ignorePatterns = readFile(at('.packignore'), 'utf-8')
