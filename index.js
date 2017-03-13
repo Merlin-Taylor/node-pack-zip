@@ -18,14 +18,15 @@ const DEFAULT_INCLUDE_PATTERNS = [
 
 let getFiles = ({ cwd }) => ({ include, ignore }) => globby(include, { cwd: cwd || process.cwd(), ignore, nodir: true });
 
-function getPackageInfo({ cwd }) {
-    let at = path.resolve.bind(path, cwd || process.cwd());
-    return readFile(at('package.json'), 'utf-8')
+function getPackageInfo(packageFile) {
+    return readFile(packageFile, 'utf-8')
         .then(content => JSON.parse(content));
 }
 
 function getDefaultOuputFilename({ cwd }) {
-    return getPackageInfo({ cwd }).then(rootPackage => `${rootPackage.name}.zip`);
+    let at = path.resolve.bind(path, cwd || process.cwd());
+    let packageFile = at('package.json');
+    return getPackageInfo(packageFile).then(packageInfo => `${packageInfo.name}.zip`);
 }
 
 function getGlobPatterns({ cwd }) {
