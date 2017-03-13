@@ -16,6 +16,11 @@ const DEFAULT_INCLUDE_PATTERNS = [
     '!node_modules/**'
 ];
 
+let resolvePathRelativeTo = (() => {
+    let pcwd = process.cwd();
+    return cwd => path.resolve.bind(path, cwd || pcwd);
+})();
+
 let getFiles = ({ cwd }) => ({ include, ignore }) => globby(include, { cwd: cwd || process.cwd(), ignore, nodir: true });
 
 function getPackageInfo(packageFile) {
@@ -24,15 +29,15 @@ function getPackageInfo(packageFile) {
 }
 
 function getDefaultOuputFilename({ cwd }) {
-    let at = path.resolve.bind(path, cwd || process.cwd());
+    let at = resolvePathRelativeTo(cwd);
     let packageFile = at('package.json');
     return getPackageInfo(packageFile).then(packageInfo => `${packageInfo.name}.zip`);
 }
 
 function getGlobPatterns({ cwd }) {
-    let at = path.resolve.bind(path, cwd || process.cwd());
+    let at = resolvePathRelativeTo(cwd);
 
-    let includePatterns = getPackageInfo({ cwd })
+    let includePatterns = getPackageInfo(at('package.json'))
         .then(rootPackage => Object.keys(rootPackage.dependencies).filter(x => x !== 'aws-sdk').map(x => `node_modules/${x}/**`))
         .then(includePatterns => DEFAULT_INCLUDE_PATTERNS.concat(includePatterns))
 
@@ -46,7 +51,7 @@ function getGlobPatterns({ cwd }) {
 }
 
 function zipFiles({ cwd, destination }) {
-    let at = path.resolve.bind(path, cwd || process.cwd());
+    let at = resolvePathRelativeTo(cwd);
 
     return files => new Promise((resolve, reject) => {
         let archive = archiver.create('zip');
