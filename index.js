@@ -1,8 +1,5 @@
 'use strict';
 
-/*
- * Most of the code coming from: https://github.com/Merlin-Taylor/node-pack-zip
- */
 const archiver = require('archiver');
 const console = require('console');
 const fs = require('fs');
@@ -54,7 +51,11 @@ function getTransitiveDependencies({ cwd }, dependencies, module) {
         dependencies.push(module);
         return getPackageInfo(at('node_modules/'+module+'/package.json'))
             .then(modulePackage => Object.keys(modulePackage.dependencies || {}))
-            .then(deps => Promise.all(deps, dep => getTransitiveDependencies({ cwd }, dependencies, dep)))
+            .then(deps => { 
+            	return Promise.map(deps, (dep) => { 
+               		return getTransitiveDependencies({ cwd }, dependencies, dep);
+               	});
+            })
             .then(flatten);
     } else {
       return Promise.resolve([]);
@@ -69,6 +70,7 @@ function getPackageDependencies({ cwd }) {
         .then(rootDependencies => {
 			let totalDependencies = [];            
         	return Promise.all(rootDependencies.map(dep => getTransitiveDependencies({ cwd }, totalDependencies, dep)))
+        		.then(() => { return totalDependencies;} );
         })
         .then(flatten);
 }
