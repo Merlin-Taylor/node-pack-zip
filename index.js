@@ -1,5 +1,8 @@
 'use strict';
 
+/*
+ * Most of the code coming from: https://github.com/Merlin-Taylor/node-pack-zip
+ */
 const archiver = require('archiver');
 const console = require('console');
 const fs = require('fs');
@@ -39,11 +42,42 @@ function getDefaultOuputFilename({ cwd }) {
     return getPackageInfo(packageFile).then(packageInfo => `${packageInfo.name}.zip`);
 }
 
+function flatten(arr) {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
+  }, []);
+}
+
+function getTransitiveDependencies({ cwd }, dependencies, module) {
+    let at = resolvePathRelativeTo(cwd);
+    if (!dependencies.find(d => d === module)) {
+        dependencies.push(module);
+        return getPackageInfo(at('node_modules/'+module+'/package.json'))
+            .then(modulePackage => Object.keys(modulePackage.dependencies || {}))
+            .then(deps => Promise.all(deps, dep => getTransitiveDependencies({ cwd }, dependencies, dep)))
+            .then(flatten);
+    } else {
+      return Promise.resolve([]);
+    }
+}
+
+function getPackageDependencies({ cwd }) {
+    let at = resolvePathRelativeTo(cwd);
+	
+    return getPackageInfo(at('package.json'))
+        .then(rootPackage => Object.keys(rootPackage.dependencies || {}))
+        .then(rootDependencies => {
+			let totalDependencies = [];            
+        	return Promise.all(rootDependencies.map(dep => getTransitiveDependencies({ cwd }, totalDependencies, dep)))
+        })
+        .then(flatten);
+}
+
 function getGlobPatterns({ cwd }) {
     let at = resolvePathRelativeTo(cwd);
 
-    let includePatterns = getPackageInfo(at('package.json'))
-        .then(rootPackage => Object.keys(rootPackage.dependencies || {}).filter(x => x !== 'aws-sdk').map(x => `node_modules/${x}/**`))
+    let includePatterns = getPackageDependencies({ cwd })
+        .then(dependencies => dependencies.map(x => `node_modules/${x}/**`))
         .then(includePatterns => DEFAULT_INCLUDE_PATTERNS.concat(includePatterns))
 
     let ignorePatterns = readFile(at('.packignore'), 'utf-8')
@@ -62,7 +96,9 @@ function zipFiles({ cwd, destination }) {
         let archive = archiver.create('zip');
         archive.on('error', error => reject(error));
         archive.pipe(fs.createWriteStream(destination)).on('end', () => resolve());
-        files.forEach(file => archive.file(at(file), { name: file }));
+        files
+            .filter(f => { return f !== destination })
+            .forEach(file => archive.file(at(file), { name: file }));
         archive.finalize();
     });
 }
