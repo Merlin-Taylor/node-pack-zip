@@ -40,7 +40,7 @@
       "email": "jogoussard@gmail.com"
     }
   ],
-  "name": "pack-zip",
+  "name": "repack-zip",
   "optionalDependencies": {},
   "readme": "README.md",
   "repository": {
@@ -48,7 +48,7 @@
     "url": "https://github.com/jogoussard/node-repack-zip.git"
   },
   "scripts": {
-    "test": "node bin/pack-zip.js"
+    "test": "node bin/repack-zip.js"
   },
   "version": "0.2.3"
 }
