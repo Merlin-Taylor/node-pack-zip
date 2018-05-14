@@ -42,3 +42,9 @@ Create the .zip file containing _my-lambda_ and all its dependencies, ready to b
 ```
 npm run build-aws-lambda
 ```
+
+## Release notes
+
+0.2.5 - Added support for root module _phantomChildren dependencies.
+0.2.4 - Initial published release
+
