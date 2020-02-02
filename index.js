@@ -36,7 +36,12 @@ function getPackageInfo(packageFile) {
 function getDefaultOuputFilename({ cwd }) {
     let at = resolvePathRelativeTo(cwd);
     let packageFile = at('package.json');
-    return getPackageInfo(packageFile).then(packageInfo => `${packageInfo.name}.zip`);
+    return getPackageInfo(packageFile)
+               .then(packageInfo => {
+                   const filename = `${packageInfo.name}.zip`;
+                   const idx = filename.indexOf('/');
+                   return (idx !== -1) ? filename.substring(idx+1) : filename;
+                });
 }
 
 function flatten(arr) {
