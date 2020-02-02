@@ -44,7 +44,11 @@ npm run build-aws-lambda
 ```
 
 ## Release notes
+0.2.6 - Do not stop on missing package.json in dependency and support scoped modules.
+(contributions from [Enalmada](https://github.com/Enalmada) and [g00dnatur3](https://github.com/g00dnatur3)).
 
-0.2.5 - Added support for root module _phantomChildren dependencies.
+0.2.5 - Added support for root module _phantomChildren dependencies 
+(contribution from [jasonfagan](https://github.com/jasonfagan)).
+
 0.2.4 - Initial published release
 

@@ -3,10 +3,12 @@
     "name": "Jacques-Olivier Goussard",
     "email": "jogoussard@gmail.com"
   },
-  "contributors": [{
-    "name": "Merlin Taylor",
-    "email": "code.merlin.taylor@gmail.com"
-   }],
+  "contributors": [
+    {
+      "name": "Merlin Taylor",
+      "email": "code.merlin.taylor@gmail.com"
+    }
+  ],
   "bin": {
     "repack-zip": "bin/repack-zip.js"
   },
@@ -50,5 +52,5 @@
   "scripts": {
     "test": "node bin/repack-zip.js"
   },
-  "version": "0.2.5"
+  "version": "0.2.6"
 }
