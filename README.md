@@ -1,3 +1,9 @@
+# DEPRECATED
+
+This repository is no longer maintained. I now use the Terraform [archive_file data source](https://www.terraform.io/docs/providers/archive/d/archive_file.html) to package Node.JS applications for deployment to AWS Lambda.
+
+# Description
+
 This package creates a .zip file containing your package and its dependencies.
 
 It is designed to help you deploy NPM packages to AWS Lambda.
